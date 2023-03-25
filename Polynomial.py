@@ -41,7 +41,7 @@ class Polynomial:
         most_significant_degree = 0
         it = 0
         while it < curr_coefs_size:
-            if self.coefs_dict[it] > 0:
+            if self.coefs_dict[it] != 0:
                 most_significant_degree = max(most_significant_degree, it)
             it += 1
         it = most_significant_degree + 1
@@ -63,12 +63,7 @@ class Polynomial:
                 curr_degree += 1
         self.__coefs_count__()
 
-    def __full_cleaning__(self):
-        self.__coefs_count__()
-        self.__filling_missings__()
-        self.__sort__()
-        self.__insignificant_remove__()
-
+    #пофиксить вывод при коэффициенте 1 || -1
     def __str__(self):
         answer = ""
         curr_degree = self.coefs_count - 1
@@ -76,11 +71,11 @@ class Polynomial:
         if curr_coef != 0:
             sign = "-" if curr_coef < 0 else " "
             if curr_degree > 1:
-                answer += f" {sign} {abs(curr_coef)}x^{curr_degree}"
+                answer += f" {sign}{abs(curr_coef)}x^{curr_degree}"
             elif curr_degree == 1:
-                answer += f" {sign} {abs(curr_coef)}x"
+                answer += f" {sign}{abs(curr_coef)}x"
             else:
-                answer += f" {sign} {abs(curr_coef)}"
+                answer += f" {sign}{abs(curr_coef)}"
         curr_degree -= 1
         while curr_degree >= 0:
             curr_coef = self.coefs_dict[curr_degree]
@@ -141,6 +136,7 @@ class Polynomial:
                 temp_pol.coefs_dict[0] = other
         temp_pol.__coefs_count__()
         temp_pol.__sort__()
+        temp_pol.__insignificant_remove__()
         return temp_pol
 
     pass
