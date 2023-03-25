@@ -3,6 +3,7 @@ class Polynomial:
 
     def __init__(self, *coefficients):
         self.coefs_dict = {}
+        self.coefs_count = 1
         if coefficients.__len__() > 0:
             if isinstance(coefficients[0], int):
                 degree = 0
@@ -28,6 +29,28 @@ class Polynomial:
                 self.coefs_dict = coefficients[0].coefs_dict
                 self.__coefs_count__()
                 self.__insignificant_remove__()
+        else:
+            raise Exception("Invalid coefficients in Polynom")
+
+    def degree(self):
+        return self.coefs_count - 1
+
+    def der(self, d=1):
+        if d < 0:
+            raise Exception("Degree can`t be less than 0")
+        temp_pol = Polynomial(0)
+        if d > 0:
+            temp_pol.coefs_dict[d - 1] = self.coefs_dict[d] * d
+        temp_pol.__temp_fix__()
+        return temp_pol
+
+    # Combining Polynomial Repair Methods
+    def __temp_fix__(self):
+        self.__coefs_count__()
+        self.__sort__()
+        self.__insignificant_remove__()
+        self.__filling_missings__()
+        self.__coefs_count__()
 
     def __sort__(self):
         self.coefs_dict = {coef_degree: coef_value for coef_degree, coef_value in sorted(self.coefs_dict.items())}
@@ -40,14 +63,13 @@ class Polynomial:
         curr_coefs_size = self.coefs_count
         most_significant_degree = 0
         it = 0
-        while it < curr_coefs_size:
-            if self.coefs_dict[it] != 0:
-                most_significant_degree = max(most_significant_degree, it)
-            it += 1
-        it = most_significant_degree + 1
-        while it < curr_coefs_size:
-            del self.coefs_dict[it]
-            it += 1
+        for coef_degree, coef_value in self.coefs_dict.items():
+            if coef_value != 0:
+                most_significant_degree = coef_degree
+        most_significant_degree += 1
+        while most_significant_degree < curr_coefs_size:
+            del self.coefs_dict[most_significant_degree]
+            most_significant_degree += 1
         self.__coefs_count__()
 
     # filling in the missing degree coefficients if argument is dictionary
@@ -63,30 +85,48 @@ class Polynomial:
                 curr_degree += 1
         self.__coefs_count__()
 
-    #пофиксить вывод при коэффициенте 1 || -1
     def __str__(self):
         answer = ""
         curr_degree = self.coefs_count - 1
         curr_coef = self.coefs_dict[curr_degree]
+        if curr_degree == 0 and curr_coef == 0:
+            answer += "0"
         if curr_coef != 0:
             sign = "-" if curr_coef < 0 else " "
-            if curr_degree > 1:
-                answer += f" {sign}{abs(curr_coef)}x^{curr_degree}"
-            elif curr_degree == 1:
-                answer += f" {sign}{abs(curr_coef)}x"
+            if abs(curr_coef) != 1:
+                if curr_degree > 1:
+                    answer += f" {sign}{abs(curr_coef)}x^{curr_degree}"
+                elif curr_degree == 1:
+                    answer += f" {sign}{abs(curr_coef)}x"
+                else:
+                    answer += f" {sign}{abs(curr_coef)}"
             else:
-                answer += f" {sign}{abs(curr_coef)}"
+                if curr_degree > 1:
+                    answer += f" {sign}x^{curr_degree}"
+                elif curr_degree == 1:
+                    answer += f" {sign}x"
+                else:
+                    answer += f" {sign}{abs(curr_coef)}"
         curr_degree -= 1
         while curr_degree >= 0:
             curr_coef = self.coefs_dict[curr_degree]
             if curr_coef != 0:
                 sign = "-" if curr_coef < 0 else "+"
-                if curr_degree > 1:
-                    answer += f" {sign} {abs(curr_coef)}x^{curr_degree}"
-                elif curr_degree == 1:
-                    answer += f" {sign} {abs(curr_coef)}x"
+                if abs(curr_coef) != 1:
+                    if curr_degree > 1:
+                        answer += f" {sign} {abs(curr_coef)}x^{curr_degree}"
+                    elif curr_degree == 1:
+                        answer += f" {sign} {abs(curr_coef)}x"
+                    else:
+                        answer += f" {sign} {abs(curr_coef)}"
                 else:
-                    answer += f" {sign} {abs(curr_coef)}"
+                    if curr_degree > 1:
+                        answer += f" {sign} x^{curr_degree}"
+                    elif curr_degree == 1:
+                        answer += f" {sign} x"
+                    else:
+                        answer += f" {sign} {abs(curr_coef)}"
+
             curr_degree -= 1
         return answer
 
@@ -120,7 +160,6 @@ class Polynomial:
         temp_pol.__sort__()
         return temp_pol
 
-#  Не работает, добавить full cleaning
     def __sub__(self, other):
         temp_pol = Polynomial(0)
         if isinstance(other, Polynomial):
@@ -134,9 +173,52 @@ class Polynomial:
                 temp_pol.coefs_dict[0] = self.coefs_dict[0] - other
             else:
                 temp_pol.coefs_dict[0] = other
-        temp_pol.__coefs_count__()
-        temp_pol.__sort__()
-        temp_pol.__insignificant_remove__()
+        temp_pol.__temp_fix__()
         return temp_pol
+
+    def __eq__(self, other):
+        if isinstance(other, Polynomial):
+            for coef_degree, coef_value in other.coefs_dict.items():
+                if coef_degree in self.coefs_dict:
+                    if self.coefs_dict[coef_degree] != coef_value:
+                        return False
+                else:
+                    return False
+        elif isinstance(other, int):
+            if not (0 in self.coefs_dict):
+                return False
+            elif self.coefs_count != 1:
+                return False
+            elif self.coefs_dict[0] != other:
+                return False
+        return True
+
+    def __neg__(self):
+        temp_pol = Polynomial(0)
+        for coef_degree, coef_value in self.coefs_dict.items():
+            temp_pol.coefs_dict[coef_degree] = -coef_value
+        temp_pol.__temp_fix__()
+        return temp_pol
+
+    # Доделать
+    def __mul__(self, other):
+        temp_pol = Polynomial(0)
+        if isinstance(other, Polynomial):
+            for other_coef_degree, other_coef_value in other.coefs_dict.items():
+                for coef_degree, coef_value in self.coefs_dict.items():
+                    multiplied_degree = other_coef_degree + coef_degree
+                    multiplied_value = other_coef_value * coef_value
+                    temp_pol += Polynomial({multiplied_degree: multiplied_value})
+        elif isinstance(other, int):
+            if 0 in self.coefs_dict:
+                temp_pol.coefs_dict[0] = self.coefs_dict[0] * other
+        temp_pol.__temp_fix__()
+        return temp_pol
+
+    def __call__(self, x):
+        result = 0
+        for coef_degree, coef_value in self.coefs_dict.items():
+            result += coef_value * x**coef_degree
+        return result
 
     pass
