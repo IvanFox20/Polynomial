@@ -29,7 +29,6 @@ class Polynomial:
                 self.coefs_dict = coefficients[0].coefs_dict
                 self.__coefs_count__()
                 self.__insignificant_remove__()
-            self.current_num = 0
         else:
             raise Exception("Invalid coefficients in Polynom")
 
@@ -222,6 +221,7 @@ class Polynomial:
         return result
 
     def __iter__(self):
+        self.current_num = 0
         return self
 
     def __next__(self):

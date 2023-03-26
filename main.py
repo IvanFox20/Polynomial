@@ -28,9 +28,7 @@ eq_pol2 = Polynomial(1, 2, 3, 4)
 eq_pol3 = Polynomial(1)
 
 print("eq_pol1 == eq_pol2") if eq_pol1 == eq_pol2 else print("eq_pol1 != eq_pol2")
-
 print("eq_pol1 == Polynomial(1, 2, 3)") if eq_pol1 == Polynomial(1, 2, 3) else print("eq_pol1 != Polynomial(1, 2, 3)")
-
 print("eq_pol3 == 1") if eq_pol3 == 1 else print("eq_pol3 != 1")
 
 
@@ -63,6 +61,11 @@ print("mul_pol1 * mul_pol2 = ", mul_pol1 * mul_pol2)
 print("mul_pol3 * mul_pol4 = ", mul_pol3 * mul_pol4)
 
 iter_pol1 = Polynomial(1, 2, 3, 4, 5, 6, 7)
-print("Iteration of iter_pol1:")
+
+print("First iteration of iter_pol1:")
+for res in iter_pol1:
+    print(res)
+
+print("Second iteration of iter_pol1:")
 for res in iter_pol1:
     print(res)
