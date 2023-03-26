@@ -62,4 +62,7 @@ mul_pol4 = Polynomial(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
 print("mul_pol1 * mul_pol2 = ", mul_pol1 * mul_pol2)
 print("mul_pol3 * mul_pol4 = ", mul_pol3 * mul_pol4)
 
-
+iter_pol1 = Polynomial(1, 2, 3, 4, 5, 6, 7)
+print("Iteration of iter_pol1:")
+for res in iter_pol1:
+    print(res)

@@ -29,6 +29,7 @@ class Polynomial:
                 self.coefs_dict = coefficients[0].coefs_dict
                 self.__coefs_count__()
                 self.__insignificant_remove__()
+            self.current_num = 0
         else:
             raise Exception("Invalid coefficients in Polynom")
 
@@ -144,7 +145,7 @@ class Polynomial:
         return answer
 
     def __add__(self, other):
-        temp_pol = Polynomial(0)
+        temp_pol = Polynomial(self)
         if isinstance(other, Polynomial):
             for coef_degree, coef_value in other.coefs_dict.items():
                 if coef_degree in self.coefs_dict:
@@ -200,7 +201,6 @@ class Polynomial:
         temp_pol.__temp_fix__()
         return temp_pol
 
-    # Доделать
     def __mul__(self, other):
         temp_pol = Polynomial(0)
         if isinstance(other, Polynomial):
@@ -220,5 +220,16 @@ class Polynomial:
         for coef_degree, coef_value in self.coefs_dict.items():
             result += coef_value * x**coef_degree
         return result
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if self.current_num <= self.degree():
+            result = f"({self.current_num}, {self.coefs_dict[self.current_num]})"
+            self.current_num += 1
+            return result
+        else:
+            raise StopIteration
 
     pass
