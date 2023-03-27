@@ -205,9 +205,10 @@ class Polynomial:
         if isinstance(other, Polynomial):
             for other_coef_degree, other_coef_value in other.coefs_dict.items():
                 for coef_degree, coef_value in self.coefs_dict.items():
-                    multiplied_degree = other_coef_degree + coef_degree
-                    multiplied_value = other_coef_value * coef_value
-                    temp_pol += Polynomial({multiplied_degree: multiplied_value})
+                    if other_coef_value and coef_value:
+                        multiplied_degree = other_coef_degree + coef_degree
+                        multiplied_value = other_coef_value * coef_value
+                        temp_pol += Polynomial({multiplied_degree: multiplied_value})
         elif isinstance(other, int):
             if 0 in self.coefs_dict:
                 temp_pol.coefs_dict[0] = self.coefs_dict[0] * other
