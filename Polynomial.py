@@ -218,7 +218,7 @@ class Polynomial:
     def __call__(self, x):
         result = 0
         for coef_degree, coef_value in self.coefs_dict.items():
-            result += coef_value * x**coef_degree
+            result += coef_value * x ** coef_degree
         return result
 
     def __iter__(self):
