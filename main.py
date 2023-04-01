@@ -1,11 +1,13 @@
 from Polynomial import Polynomial
 
 # invalid_pol = Polynomial() # this will throw an exception
+zero_pol = Polynomial(0)
 dictionary_pol = Polynomial({0: 5, 1: 6, 4: 7, 5: 0, 6: 0})
 set_pol = Polynomial(1, 2, 3, 0, 0, 0)
 list_pol = Polynomial([4, 5, 6, 0, 0, 0])
 another_pol_pol = Polynomial(Polynomial(10, 11, 12))
 
+print("zero_pol = ", zero_pol)
 print("dictionary_pol = ", dictionary_pol)
 print("set_pol = ", set_pol)
 print("list_pol = ", list_pol)
